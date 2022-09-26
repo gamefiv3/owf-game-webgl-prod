@@ -1,0 +1,67 @@
+@font-face {
+    font-family: "ThaleahFat";
+    src: url('ThaleahFat_TTF.ttf') format("truetype");
+}
+
+body { padding: 0; margin: 0; background-color: black; overflow-x: hidden; overflow-y: hidden; }
+#unity-container { position: absolute }
+#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%) }
+#unity-container.unity-mobile { width: 100%; height: 100% }
+#unity-canvas { background: #231F20 }
+.unity-mobile #unity-canvas { width: 100%; height: 100% }
+#unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none }
+#unity-logo { width: 154px; height: 130px; background: url('unity-logo-dark.png') no-repeat center }
+#unity-progress-bar-empty { width: 141px; height: 18px; margin-top: 10px; background: url('progress-bar-empty-dark.png') no-repeat center }
+#unity-progress-bar-full { width: 0%; height: 18px; margin-top: 10px; background: url('progress-bar-full-dark.png') no-repeat center }
+#unity-footer { position: relative }
+.unity-mobile #unity-footer { display: none }
+#unity-webgl-logo { float:left; width: 204px; height: 38px; background: url('webgl-logo.png') no-repeat center }
+#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px; color: white; }
+#unity-fullscreen-button { float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center }
+#unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    /* background-color: #FFFFFF99; */
+    width: 100vw;
+    padding: 0.2rem;
+}
+#footer-content {
+    font-family: arial;
+    font-size: 14px;
+    color: white;
+}
+
+#unity-mobile-page {
+    width: 100vw;
+    height: 100vh;
+    background: url('splash.png') no-repeat center;
+    background-size: cover;
+    background-color: rgba(0,0,0,0.6);
+    background-blend-mode: darken;
+    display: none;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+}
+
+#unity-mobile-page-inner {
+    margin: 2rem;
+}
+
+#unity-mobile-page h1 {
+    color: white;
+    text-align: center;
+    font-family: "ThaleahFat", sans-serif;
+    font-size: 5rem;
+    font-weight: 200;
+}
+
+#unity-error-desc {
+    color: white;
+    text-align: center;
+    font-family: "ThaleahFat", sans-serif;
+    font-size: 3.5rem;
+    font-weight: 200;
+}

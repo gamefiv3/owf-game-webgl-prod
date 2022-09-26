@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>VCWorld | OurWorldIsFlat</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=1280 height=720></canvas>
+      <div id="unity-loading-bar">
+        <!-- <div id="unity-logo"></div> -->
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <!-- <div id="unity-footer">
+        <div id="unity-webgl-logo"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">VCWorld</div>
+				<div id="unity-build-title">Fullscreen</div>
+      </div> -->
+    </div>
+    <div id="unity-mobile-page">
+        <div id="unity-mobile-page-inner">
+            <h1 id="unity-error-header">WebGL builds are not supported on mobile devices</h1>
+            <p id="unity-error-desc">Please use a laptop or a desktop</p>
+        </div>
+    </div>
+		<!-- <div id="footer">
+			<div id="footer-content">© Metaverse - 2022</div>
+		</div> -->
+
+    <script>
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var warningBanner = document.querySelector("#unity-warning");
+      var mobileScreen = document.querySelector("#unity-mobile-page");
+      var errorHeader = document.querySelector("#unity-error-header");
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        errorHeader.innerHTML = msg;
+        // function updateBannerVisibility() {
+        //   warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        // }
+        // var div = document.createElement('div');
+        // div.innerHTML = msg;
+        // warningBanner.appendChild(div);
+        // if (type == 'error') div.style = 'background: red; padding: 10px;';
+        // else {
+        //   if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        //   setTimeout(function() {
+        //     warningBanner.removeChild(div);
+        //     updateBannerVisibility();
+        //   }, 5000);
+        // }
+        // updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/build.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/build.data",
+        frameworkUrl: buildUrl + "/build.framework.js",
+        codeUrl: buildUrl + "/build.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "owf",
+        productName: "VCWorld",
+        productVersion: "1.0.0",
+        showBanner: unityShowBanner,
+      };
+
+      // By default Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        container.className = "unity-mobile";
+        // Avoid draining fillrate performance on mobile devices,
+        // and default/override low DPI mode on mobile browsers.
+        config.devicePixelRatio = 1;
+        canvas.style.display = 'none';
+        loadingBar.style.display = 'none';
+        mobileScreen.style.display = 'flex';
+        unityShowBanner('WebGL builds are not supported on mobile devices.');
+      } else {
+        mobileScreen.style.display = 'none';
+        function ResizeWindow()
+        {
+            let width, height;
+
+            const aspect = 1280 / 720;
+            const currentAspect = window.innerWidth / window.innerHeight;
+
+            console.log(window.innerWidth, window.innerHeight);
+        
+            // Use height as basis
+            if (aspect < currentAspect)
+            {   
+                width = window.innerHeight * aspect;
+                height = window.innerHeight;
+                
+                
+            }
+            else
+            {
+                width =  window.innerWidth;
+                height = window.innerWidth / aspect;
+            }
+
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+        }
+        
+        ResizeWindow();
+
+        window.addEventListener('resize', ResizeWindow);
+
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            createUnityInstance(canvas, config, (progress) => {
+            progressBarFull.style.width = 100 * progress + "%";
+            }).then((unityInstance) => {
+            loadingBar.style.display = "none";
+            // fullscreenButton.onclick = () => {
+            //     unityInstance.SetFullscreen(1);
+            // };
+
+                // Callback for the Unity OnClose event
+                window.onbeforeunload = function(e) {
+                    
+                    // These are the messages you're seeing in the gif
+                    console.log("Calling OnClose from Browser!");
+                    unityInstance.SendMessage("WorldManager", "WebGLOnExit");
+                
+                    // This never shows up correctly for me, but it does prompt
+                    // the player to close their window with a dialogue box
+                    //
+                    var dialogText = "Progress will be saved. Are you sure you want to leave the website?";
+                    e.returnValue = dialogText;
+                    return dialogText;
+                };
+            }).catch((message) => {
+            alert(message);
+            });
+        };
+        document.body.appendChild(script);
+      }
+      loadingBar.style.display = "block";
+    </script>
+  </body>
+</html>
